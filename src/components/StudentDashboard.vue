@@ -7,6 +7,10 @@
   import ProfessorTab from './Student/ProfessorTab.vue'
   import AnnouncementTab from './Student/AnnouncementTab.vue'
 
+  import Student_Settings from '../components/Student/DropDown/Student_Settings.vue'
+  import Student_AccountSettings from '../components/Student/DropDown/Student_AccountSettings.vue'
+  import Student_About from '../components/Student/DropDown/Student_About.vue'
+
   interface Subject {
     id: string;
     code: string;
@@ -29,6 +33,7 @@
   const emit = defineEmits(['logout'])
 
   const currentTab = ref('roadmap')
+  const isDropdownOpen = ref(false) // NEW: Dropdown State
 
   const professors = ref<Professor[]>([
     { name: 'Professor Isra, Johaira', expertise: 'Database Systems', description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.' },
@@ -106,13 +111,38 @@
     sub.completed = !sub.completed;
     if (!sub.completed) uncheckDependents(sub.id);
   }
+
+  const handleDropdownClick = (option: string) => {
+    isDropdownOpen.value = false;
+    if (option === 'logout') {
+      emit('logout');
+    } else {
+      currentTab.value = option;
+    }
+  }
 </script>
 
 <template>
   <div class="tree-app">
     <header class="top-nav">
       <div class="logo-section">
-        <div class="logo">MSU Student Portal</div>
+        
+        <div class="brand-wrapper" style="display: flex; align-items: center; gap: 15px;">
+          <div class="dropdown-container">
+            <button class="menu-btn" @click="isDropdownOpen = !isDropdownOpen">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            
+            <div v-if="isDropdownOpen" class="dropdown-menu">
+              <button @click="handleDropdownClick('settings')">Settings</button>
+              <button @click="handleDropdownClick('account-settings')">Account Settings</button>
+              <button @click="handleDropdownClick('about')">About</button>
+              <button class="logout-opt" @click="handleDropdownClick('logout')">Sign Out</button>
+            </div>
+          </div>
+          <div class="logo">MSU Student Portal</div>
+        </div>
+
         <nav class="tabs">
           <button :class="{ active: currentTab === 'roadmap' }" @click="switchTab('roadmap')">Roadmap</button>
           <button :class="{ active: currentTab === 'syllabus' }" @click="switchTab('syllabus')">Syllabus</button>
@@ -122,11 +152,11 @@
           <button :class="{ active: currentTab === 'announcements' }" @click="switchTab('announcements')">Announcements</button>
         </nav>
       </div>
+      
       <div class="prog-box">
         <div class="rail"><div class="fill" :style="{ width: progressPercentage + '%' }"></div></div>
         <span class="pct">{{ finishedUnits.toFixed(2) }} / {{ totalUnits.toFixed(2) }}</span>
-        <button class="logout-btn" @click="emit('logout')" title="Log Out">Sign Out</button>
-      </div>
+        </div>
     </header>
 
     <main class="content-area">
@@ -136,6 +166,10 @@
       <EnrolledTab v-if="currentTab === 'enrolled'" :subjects="subjects" :professors="professors" :isUnlocked="isUnlocked" />
       <ProfessorTab v-if="currentTab === 'professors'" :professors="professors" />
       <AnnouncementTab v-if="currentTab === 'announcements'" :subjects="subjects" :announcementsData="props.announcementsData" :isUnlocked="isUnlocked" />
+      
+      <Student_Settings v-if="currentTab === 'settings'" />
+      <Student_AccountSettings v-if="currentTab === 'account-settings'" />
+      <Student_About v-if="currentTab === 'about'" />
     </main>
   </div>
 </template>
@@ -227,23 +261,6 @@
     white-space: nowrap; 
   }
 
-  .logout-btn { 
-    background: rgba(255,255,255,0.1); 
-    border: 1px solid rgba(255,255,255,0.2); 
-    color: white; 
-    padding: 8px 16px; 
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 0.9rem;
-    cursor: pointer; 
-    transition: 0.2s; 
-  }
-  
-  .logout-btn:hover { 
-    background: #ef4444; 
-    border-color: #ef4444; 
-  }
-
   .content-area { 
     flex: 1; 
     overflow: auto; 
@@ -251,5 +268,76 @@
     background: #f8fafc; 
     width: 100%; 
     display: block; 
+  }
+
+  .dropdown-container { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+  }
+  
+  .menu-btn { 
+    background: transparent; 
+    border: none; 
+    color: white; 
+    cursor: pointer; 
+    padding: 5px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: 0.2s; 
+    border-radius: 8px;
+  }
+  
+  .menu-btn:hover { 
+    background: rgba(255,255,255,0.1); 
+  }
+  
+  .dropdown-menu { 
+    position: absolute; 
+    top: 130%; 
+    left: 0; 
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    width: 220px; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    z-index: 200; 
+    border: 1px solid #e2e8f0;
+  }
+  
+  .dropdown-menu button { 
+    padding: 15px 20px; 
+    background: transparent; 
+    border: none; 
+    text-align: left; 
+    font-size: 0.95rem; 
+    font-weight: 700; 
+    color: #334155; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    border-bottom: 1px solid #f1f5f9; 
+    opacity: 1; 
+  }
+  
+  .dropdown-menu button:last-child { 
+    border-bottom: none; 
+  }
+  
+  .dropdown-menu button:hover { 
+    background: #f8fafc; 
+    color: #800000; 
+    padding-left: 25px; 
+  }
+  
+  .dropdown-menu button.logout-opt { 
+    color: #e11d48; 
+  }
+  
+  .dropdown-menu button.logout-opt:hover { 
+    color: #be123c; 
+    background: #fff1f2; 
   }
 </style>
