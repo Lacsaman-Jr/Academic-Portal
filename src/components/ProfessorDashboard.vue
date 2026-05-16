@@ -3,8 +3,6 @@ import { ref } from 'vue'
 import ProfManageClassTab from '../components/Professor/ProfAnnouncementTab.vue'
 import ProfAnnouncementTab from '../components/Professor/ProfManageClassTab.vue'
 
-
-// NEW: Settings Imports
 import Prof_Settings from '../components/Professor/DropDown/Prof_About.vue'
 import Prof_AccountSettings from '../components/Professor/DropDown/Prof_AccountSettings.vue'
 import Prof_About from '../components/Professor/DropDown/Prof_About.vue'
