@@ -8,7 +8,6 @@
   import AnnouncementTab from './Student/AnnouncementTab.vue'
 
   import Student_Settings from '../components/Student/DropDown/Student_Settings.vue'
-  import Student_AccountSettings from '../components/Student/DropDown/Student_AccountSettings.vue'
   import Student_About from '../components/Student/DropDown/Student_About.vue'
 
   interface Subject {
