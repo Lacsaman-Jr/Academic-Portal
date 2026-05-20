@@ -134,7 +134,6 @@
             
             <div v-if="isDropdownOpen" class="dropdown-menu">
               <button @click="handleDropdownClick('settings')">Settings</button>
-              <button @click="handleDropdownClick('account-settings')">Account Settings</button>
               <button @click="handleDropdownClick('about')">About</button>
               <button class="logout-opt" @click="handleDropdownClick('logout')">Sign Out</button>
             </div>
@@ -167,7 +166,6 @@
       <AnnouncementTab v-if="currentTab === 'announcements'" :subjects="subjects" :announcementsData="props.announcementsData" :isUnlocked="isUnlocked" />
       
       <Student_Settings v-if="currentTab === 'settings'" />
-      <Student_AccountSettings v-if="currentTab === 'account-settings'" />
       <Student_About v-if="currentTab === 'about'" />
     </main>
   </div>
