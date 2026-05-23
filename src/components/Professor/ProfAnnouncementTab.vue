@@ -2,54 +2,56 @@
 import { ref, computed } from 'vue'
 
 const props = defineProps({
-  classes: { type: Array, default: () => [] },
+  classes: { type: Array as () => any[], default: () => [] },
   announcementsData: { type: Object, default: () => ({}) }
 })
+
 const emit = defineEmits(['add-announcement'])
 
 const activeSubject = ref<any>(null)
-
 const newPostType = ref('Announcement')
+const newPostScope = ref('Professor Announcement') // 🌟 Added Scope selection
 const newPostContent = ref('')
 
 const currentAnnouncements = computed(() => {
-  if (!activeSubject.value) return []
-  if (!props.announcementsData) return [] // Safe check 1
-  
+  if (!activeSubject.value || !props.announcementsData) return []
   return props.announcementsData[activeSubject.value.id] || props.announcementsData[activeSubject.value.code] || []
 })
 
 const setActiveSubject = (sub: any) => {
   activeSubject.value = sub
   newPostContent.value = ''
-  newPostType.value = 'Announcement'
 }
 
 const submitPost = () => {
   if (!newPostContent.value.trim() || !activeSubject.value) return
 
+  // Create formatted post object
   const post = {
     type: newPostType.value,
-    date: new Date().toISOString(),
-    author: 'Prof. Elcana', 
-    content: newPostContent.value
+    scope: newPostScope.value, // Use the selected scope
+    date: new Date().toLocaleDateString(undefined, { 
+      month: 'short', day: 'numeric', year: 'numeric' //, hour: '2-digit', minute: '2-digit' 
+    }),
+    author: 'Prof. Lucman', 
+    content: newPostContent.value,
+    title: `${newPostType.value} for ${activeSubject.value.code}`
   }
 
-  const subjectKey = activeSubject.value.id || activeSubject.value.code;
+  const subjectKey = activeSubject.value.id || activeSubject.value.code
+  
+  // Single emit - App.vue handles the state update
   emit('add-announcement', subjectKey, post)
+
   newPostContent.value = '' 
 }
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
+const formatDate = (dateStr: string) => dateStr
 </script>
 
 <template>
   <div class="lms-announcement-wrapper">
     <div class="split-layout">
-      
       <aside class="lms-sidebar">
         <h3>My Handled Classes</h3>
         <div class="class-list">
@@ -61,10 +63,6 @@ const formatDate = (dateStr: string) => {
             <div class="class-code">{{ sub.code }}</div>
             <div class="class-title">{{ sub.title }}</div>
           </button>
-          
-          <div v-if="!props.classes || props.classes.length === 0" class="empty-list">
-            No classes assigned.
-          </div>
         </div>
       </aside>
 
@@ -75,22 +73,29 @@ const formatDate = (dateStr: string) => {
         </div>
         
         <div v-else class="feed-container">
-          
           <div class="feed-header-panel">
             <h1>{{ activeSubject.title }}</h1>
-            <p>Post updates and requirements for {{ activeSubject.code }}</p>
+            <p>Post updates for {{ activeSubject.code }}</p>
           </div>
 
           <div class="post-editor">
             <div class="editor-header">Create New Post</div>
             <div class="editor-body">
-              <select v-model="newPostType" class="type-select">
-                <option>Announcement</option>
-                <option>Requirement</option>
-                <option>Project</option>
-                <option>Memorandum</option>
-              </select>
-              <textarea v-model="newPostContent" placeholder="Write instructions, updates, or announcements here..."></textarea>
+              <div class="select-group">
+                <select v-model="newPostType" class="type-select">
+                  <option>Announcement</option>
+                  <option>Requirement</option>
+                  <option>Project</option>
+                  <option>Memorandum</option>
+                </select>
+                <select v-model="newPostScope" class="type-select">
+                  <option>Professor Announcement</option>
+                  <option>Department-Level</option>
+                  <option>College-Level</option>
+                  <option>Campus-Wide</option>
+                </select>
+              </div>
+              <textarea v-model="newPostContent" placeholder="Write instructions or updates here..."></textarea>
             </div>
             <div class="editor-footer">
               <button class="post-btn" @click="submitPost">Publish Post</button>
@@ -98,31 +103,26 @@ const formatDate = (dateStr: string) => {
           </div>
 
           <div class="post-list">
-            <div v-if="currentAnnouncements.length === 0" class="no-posts">
-              <span class="no-post-icon">📭</span>
-              <p>No announcements posted yet.</p>
-            </div>
-
             <div v-for="(post, idx) in currentAnnouncements" :key="idx" class="post-card">
               <div class="post-header">
                 <div class="author-avatar">{{ post.author ? post.author[0] : 'P' }}</div>
                 <div class="author-info">
-                  <span class="author-name">{{ post.author || 'Professor' }}</span>
+                  <span class="author-name">{{ post.author }}</span>
                   <span class="post-date">{{ formatDate(post.date) }}</span>
                 </div>
                 <span class="post-type" :class="post.type.toLowerCase()">{{ post.type }}</span>
               </div>
               <div class="post-body">{{ post.content }}</div>
             </div>
-            
-            <div class="feed-bottom-spacer"></div>
           </div>
-
         </div>
       </main>
     </div>
   </div>
 </template>
+
+/* Keep your existing styles, just add this for the new select group */
+/* ... rest of your CSS ... */
 
 <style scoped>
 .lms-announcement-wrapper { 
@@ -185,17 +185,15 @@ const formatDate = (dateStr: string) => {
 .icon-placeholder { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 .select-prompt h2 { margin: 0; color: #1e293b; font-weight: 800; }
 
-/* ITO ANG NAAYOS: Inilipat natin ang scrollability sa buong container */
 .feed-container { 
   display: flex; 
   flex-direction: column; 
   flex: 1;
   gap: 20px; 
-  overflow-y: auto; /* DITO NA MAG-SSCROLL ANG LAHAT */
+  overflow-y: auto; 
   padding-right: 15px;
 }
 
-/* Scrollbar Styling for the WHOLE feed */
 .feed-container::-webkit-scrollbar { width: 8px; }
 .feed-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
@@ -228,7 +226,6 @@ textarea:focus { border-color: #800000; }
 .post-btn { background: #800000; color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 .post-btn:hover { background: #600000; transform: translateY(-2px); }
 
-/* Inalis na ang overflow sa post list para sumabay siya sa feed container */
 .post-list { 
   display: flex; 
   flex-direction: column; 
@@ -254,4 +251,5 @@ textarea:focus { border-color: #800000; }
 .post-type.memorandum { background: #fef7e0; color: #b45309; }
 
 .post-body { padding: 25px; font-size: 1.1rem; color: #334155; line-height: 1.7; white-space: pre-wrap; }
+.select-group { display: flex; gap: 10px; }
 </style>
