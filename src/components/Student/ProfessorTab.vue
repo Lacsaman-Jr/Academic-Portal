@@ -5,13 +5,13 @@
 
   const getProfImageName = (fullName: string) => {
     if (!fullName) return '';
-    const parts = fullName.split(',');
-    if (parts.length < 2) return `/${fullName.toLowerCase().replace(/[^a-z0-9]/g, '')}.jpg`;
-    
-    const lastName = parts[0].trim().toLowerCase();
-    const firstName = parts[1].trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    return `/${firstName}${lastName}.jpg`; 
+    const parts = fullName.split(' ');
+    if (parts.length === 0) return '';
+
+    const lastName = parts[0]?.trim().toLowerCase() || '';
+    const firstName = parts[1]?.trim().toLowerCase().replace(/[^a-z0-9]/g, '') || '';
+
+    return `/${firstName}${lastName}.jpg`;
   }
 
   const handleImgError = (e: Event) => {
