@@ -10,7 +10,7 @@ const emit = defineEmits(['add-announcement'])
 
 const activeSubject = ref<any>(null)
 const newPostType = ref('Announcement')
-const newPostScope = ref('Professor Announcement') // 🌟 Added Scope selection
+const newPostScope = ref('Professor Announcement')
 const newPostContent = ref('')
 
 const currentAnnouncements = computed(() => {
@@ -26,12 +26,11 @@ const setActiveSubject = (sub: any) => {
 const submitPost = () => {
   if (!newPostContent.value.trim() || !activeSubject.value) return
 
-  // Create formatted post object
   const post = {
     type: newPostType.value,
-    scope: newPostScope.value, // Use the selected scope
+    scope: newPostScope.value,
     date: new Date().toLocaleDateString(undefined, { 
-      month: 'short', day: 'numeric', year: 'numeric' //, hour: '2-digit', minute: '2-digit' 
+      month: 'short', day: 'numeric', year: 'numeric'
     }),
     author: 'Prof. Lucman', 
     content: newPostContent.value,
@@ -40,7 +39,6 @@ const submitPost = () => {
 
   const subjectKey = activeSubject.value.id || activeSubject.value.code
   
-  // Single emit - App.vue handles the state update
   emit('add-announcement', subjectKey, post)
 
   newPostContent.value = '' 
@@ -120,9 +118,6 @@ const formatDate = (dateStr: string) => dateStr
     </div>
   </div>
 </template>
-
-/* Keep your existing styles, just add this for the new select group */
-/* ... rest of your CSS ... */
 
 <style scoped>
 .lms-announcement-wrapper { 
