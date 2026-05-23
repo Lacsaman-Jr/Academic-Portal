@@ -41,68 +41,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, inject, Ref } from 'vue'
 
-const isDarkMode = ref(false)
+const isDarkMode = inject<Ref<boolean>>('isDarkMode', ref(false))
 const selectedLanguage = ref('en')
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme === 'dark') {
-    isDarkMode.value = true
-  }
-})
-
-watch(isDarkMode, (newValue) => {
-  localStorage.setItem('theme', newValue ? 'dark' : 'light')
-})
 </script>
 
 <style scoped>
   .section-container { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
-    padding: 20px; 
+    background: white; 
     border-radius: 12px; 
-    transition: background-color 0.3s ease; 
+    padding: 2rem; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+    max-width: 800px; 
+    margin: 0 auto; 
+    transition: all 0.3s ease;
   }
   
   h2 { 
-    color: #1e293b; 
+    color: #800000; 
+    margin: 0 0 1.5rem; 
+    font-size: 1.5rem; 
     border-bottom: 2px solid #f1f5f9; 
-    padding-bottom: 10px; 
-    margin-top: 0; 
-    transition: color 0.3s; 
+    padding-bottom: 0.5rem; 
+    transition: border-color 0.3s ease;
   }
   
   .setting-group { 
     display: flex; 
     flex-direction: column; 
-    gap: 15px; 
+    gap: 1.5rem; 
   }
   
   .setting-item { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 15px; 
-    background: #f8fafc; 
-    border-radius: 12px; 
-    border: 1px solid #e2e8f0; 
-    transition: all 0.3s ease; 
+    padding-bottom: 1.5rem; 
+    border-bottom: 1px solid #f1f5f9; 
+    transition: border-color 0.3s ease;
   }
   
-  .setting-item h4 { 
-    margin: 0 0 5px 0; 
+  .setting-item:last-child { 
+    border-bottom: none; 
+    padding-bottom: 0; 
+  }
+  
+  h4 { 
+    margin: 0 0 0.25rem; 
     color: #334155; 
-    transition: color 0.3s; 
+    font-size: 1.1rem; 
+    transition: color 0.3s;
   }
   
-  .setting-item p { 
+  p { 
     margin: 0; 
-    font-size: 0.85rem; 
     color: #64748b; 
+    font-size: 0.9rem; 
     transition: color 0.3s; 
   }
   
@@ -162,28 +157,44 @@ watch(isDarkMode, (newValue) => {
     transform: translateX(24px); 
   }
 
+  /* --- DARK THEME OVERRIDES FOR PREFERENCES --- */
+  .dark-theme.section-container {
+    background: #1e293b;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
+  }
 
+  .dark-theme h2 {
+    color: #ffd700;
+    border-bottom-color: #334155;
+  }
 
-.dark-theme {
-  background-color: #0f172a; 
-}
-.dark-theme h2 { 
-  color: #f8fafc; 
-  border-bottom-color: #334155; 
-}
-.dark-theme .setting-item { 
-  background: #1e293b; 
-  border-color: #334155; 
-}
-.dark-theme .setting-item h4 { 
-  color: #f1f5f9; 
-}
-.dark-theme .setting-item p { 
-  color: #94a3b8; 
-}
-.dark-theme .form-select { 
-  background: #0f172a; 
-  color: #f1f5f9; 
-  border-color: #475569; 
-}
+  .dark-theme .setting-item {
+    border-bottom-color: #334155;
+  }
+
+  .dark-theme h4 {
+    color: #f1f5f9;
+  }
+
+  .dark-theme p {
+    color: #94a3b8;
+  }
+
+  .dark-theme .form-select {
+    background: #0f172a;
+    color: #f1f5f9;
+    border-color: #475569;
+  }
+
+  .dark-theme .slider {
+    background-color: #475569;
+  }
+
+  .dark-theme input:checked + .slider {
+    background-color: #ffd700;
+  }
+
+  .dark-theme input:checked + .slider:before {
+    background-color: #800000;
+  }
 </style>
