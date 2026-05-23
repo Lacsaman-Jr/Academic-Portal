@@ -1,14 +1,11 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import RoadmapTab from './Student/RoadmapTab.vue'
-  import SyllabusTab from './Student/SyllabusTab.vue'
-  import TutorialTab from './Student/TutorialTab.vue'
-  import EnrolledTab from './Student/EnrolledTab.vue'
-  import ProfessorTab from './Student/ProfessorTab.vue'
-  import AnnouncementTab from './Student/AnnouncementTab.vue'
-
-  import Student_Settings from '../components/Student/DropDown/Student_Settings.vue'
-  import Student_About from '../components/Student/DropDown/Student_About.vue'
+  import RoadmapTab from "./Student/RoadmapTab.vue";
+  import SyllabusTab from "./Student/SyllabusTab.vue";
+  import TutorialTab from "./Student/TutorialTab.vue";
+  import EnrolledTab from "./Student/EnrolledTab.vue";
+  import ProfessorTab from "./Student/ProfessorTab.vue";
+  import AnnouncementTab from "./Student/AnnouncementTab.vue";
 
   interface Subject {
     id: string;
@@ -28,22 +25,106 @@
     description: string;
   }
 
-  const props = defineProps(['announcementsData'])
+  const props = defineProps<{
+    subjects: any[];
+    announcementsData?: any[];
+    isUnlocked?: Function;
+  }>();
+
   const emit = defineEmits(['logout'])
 
   const currentTab = ref('roadmap')
-  const isDropdownOpen = ref(false) // NEW: Dropdown State
 
-  const professors = ref<Professor[]>([
-    { name: 'Professor Isra, Johaira', expertise: 'Database Systems', description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.' },
-    { name: 'Professor Elcana, Llewelyn', expertise: 'Software Engineering', description: 'Prof. Elcana has extensive experience in the software development lifecycle and UI/UX design, emphasizing Agile methodologies.' },
-    { name: 'Professor Asakil, Al-annuar', expertise: 'Theoretical Computer Science', description: 'An expert in mathematical logic and computational complexity. He teaches students the formal foundations of algorithmic thinking.' },
-    { name: 'Professor Asakil, Mudzna', expertise: 'Artificial Intelligence', description: 'Prof. Mudzna leads research in Machine Learning and Intelligent Systems, focusing on neural network implementation and automation.' },
-    { name: 'Professor Lucman, Abdurachman', expertise: 'Network Security', description: 'A specialist in cybersecurity and systems administration. He focuses on network protocols, encryption, and infrastructure defense.' },
-    { name: 'Professor Tarathingan, Bantugon', expertise: 'Computer Architecture', description: 'Expert in high-performance computing and parallel systems. He teaches the intricate relationship between hardware and software.' },
-    { name: 'Professor Mondejar, Jeffrey', expertise: 'Programming Paradigms', description: 'Prof. Mondejar specializes in functional and imperative programming languages, helping students master logic across different coding environments.' },
-    { name: 'Professor Gubat, Sayyedatel Janna', expertise: 'System Engineer', description: 'Prof. Gubat specializes in functional and imperative programming languages, helping students master logic across different coding environments.' }
-  ])
+  const professors = ref([
+    {
+      name: 'Isra, Johaira R.',
+      expertise: 'DCS Faculty',
+      email: 'johaira.isra@msumain.edu.ph',
+      consultation: 'Mon/Wed 9:00 AM - 11:00 AM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Isra specializes in advanced information systems, database management structures, and systems development lifecycle processes at CICS.'
+    },
+    {
+      name: 'Wade, Janice F.',
+      expertise: 'DCS Faculty',
+      email: 'janice.wade@msumain.edu.ph',
+      consultation: 'Tue/Thu 1:00 PM - 3:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Wade leads core computer science courses, focusing on curriculum quality, software design paradigms, and computing methodology foundations.'
+    },
+    {
+      name: 'Marohomsalic, Azreen M.',
+      expertise: 'DCS Faculty',
+      email: 'azreen.marohomsalic@msumain.edu.ph',
+      consultation: 'Wed/Fri 10:00 AM - 12:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Marohomsalic teaches computer engineering concepts, digital design architectures, and hardware integration within the computing department.'
+    },
+    {
+      name: 'Asakil, Al Annuar M.',
+      expertise: 'DCS Faculty',
+      email: 'alannuar.asakil@msumain.edu.ph',
+      consultation: 'Mon/Wed 2:00 PM - 4:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Al Annuar Asakil focuses on data communication layouts, infrastructure networks, system operations, and network security applications.'
+    },
+    {
+      name: 'Asakil, Mudzna M.',
+      expertise: 'DCS Faculty',
+      email: 'mudzna.asakil@msumain.edu.ph',
+      consultation: 'Tue/Thu 9:00 AM - 11:00 AM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Mudzna Asakil guides students through data analytics, software development pipelines, and foundational computing logic paradigms.'
+    },
+    {
+      name: 'Gulam, Sacaria B.',
+      expertise: 'DCS Faculty',
+      email: 'sacaria.gulam@msumain.edu.ph',
+      consultation: 'Mon/Fri 1:00 PM - 3:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Gulam specializes in web development workflows, data modeling techniques, and mentoring student project milestones.'
+    },
+    {
+      name: 'Mondejar, Jeffrey M.',
+      expertise: 'DCS Faculty',
+      email: 'jeffrey.mondejar@msumain.edu.ph',
+      consultation: 'Tue/Thu 10:00 AM - 12:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Mondejar specializes in object-oriented structures, programming principles, and system analytics for computer science tracks.'
+    },
+    {
+      name: 'Elcana, Llewelyn A.',
+      expertise: 'DCS Faculty',
+      email: 'llewelyn.elcana@msumain.edu.ph',
+      consultation: 'Wed/Fri 3:00 PM - 5:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Elcana delivers lectures on frontend web applications, interactive system designs, and user interface engineering.'
+    },
+    {
+      name: 'Taratingan, Bantogun S.',
+      expertise: 'DCS Faculty',
+      email: 'bantogun.taratingan@msumain.edu.ph',
+      consultation: 'Mon/Wed 11:00 AM - 1:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Taratingan emphasizes software project architectures, computation principles, and engineering systems fundamentals.'
+    },
+    {
+      name: 'Abdulrachman, Lucman S.',
+      expertise: 'DCS Faculty',
+      email: 'lucman.abdulrachman@msumain.edu.ph',
+      consultation: 'Tue/Thu 3:00 PM - 5:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Abdulrachman details algorithmic complexity models, advanced data structure pathways, and clean-code development implementations.'
+    },
+    {
+      name: 'Gubat, Sayyedatel Janna M.',
+      expertise: 'DCS Faculty',
+      email: 'janna.gubat@msumain.edu.ph',
+      consultation: 'Thu/Fri 1:00 PM - 3:00 PM',
+      subjects: ['CCC', 'CSC'],
+      description: 'Prof. Gubat covers technical research procedures, data analysis frameworks, and academic computing paradigms.'
+    }
+  ]);
 
   const subjects = ref<Subject[]>([
     { id: 'CCC100', code: 'CCC100', title: 'Fundamentals of Computing', units: 3, completed: false, prerequisites: [], grid: { r: 1, c: 2 }, description: 'Introduction to computer architecture, data representation, and the fundamental operations of a computer system.', examples: 'Binary, Hex, Logic Gates, and CPU Instruction Sets.' },
@@ -110,37 +191,13 @@
     sub.completed = !sub.completed;
     if (!sub.completed) uncheckDependents(sub.id);
   }
-
-  const handleDropdownClick = (option: string) => {
-    isDropdownOpen.value = false;
-    if (option === 'logout') {
-      emit('logout');
-    } else {
-      currentTab.value = option;
-    }
-  }
 </script>
 
 <template>
   <div class="tree-app">
     <header class="top-nav">
       <div class="logo-section">
-        
-        <div class="brand-wrapper" style="display: flex; align-items: center; gap: 15px;">
-          <div class="dropdown-container">
-            <button class="menu-btn" @click="isDropdownOpen = !isDropdownOpen">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            </button>
-            
-            <div v-if="isDropdownOpen" class="dropdown-menu">
-              <button @click="handleDropdownClick('settings')">Settings</button>
-              <button @click="handleDropdownClick('about')">About</button>
-              <button class="logout-opt" @click="handleDropdownClick('logout')">Sign Out</button>
-            </div>
-          </div>
-          <div class="logo">MSU Student Portal</div>
-        </div>
-
+        <div class="logo">MSU Student Portal</div>
         <nav class="tabs">
           <button :class="{ active: currentTab === 'roadmap' }" @click="switchTab('roadmap')">Roadmap</button>
           <button :class="{ active: currentTab === 'syllabus' }" @click="switchTab('syllabus')">Syllabus</button>
@@ -150,191 +207,82 @@
           <button :class="{ active: currentTab === 'announcements' }" @click="switchTab('announcements')">Announcements</button>
         </nav>
       </div>
-      
       <div class="prog-box">
         <div class="rail"><div class="fill" :style="{ width: progressPercentage + '%' }"></div></div>
         <span class="pct">{{ finishedUnits.toFixed(2) }} / {{ totalUnits.toFixed(2) }}</span>
-        </div>
+        <button class="logout-btn" @click="emit('logout')" title="Log Out">Sign Out</button>
+      </div>
     </header>
 
-    <main class="content-area">
-      <RoadmapTab v-if="currentTab === 'roadmap'" :subjects="subjects" :isUnlocked="isUnlocked" @toggle="toggleComplete" />
-      <SyllabusTab v-if="currentTab === 'syllabus'" :subjects="subjects" />
-      <TutorialTab v-if="currentTab === 'tutorials'" :subjects="subjects" />
-      <EnrolledTab v-if="currentTab === 'enrolled'" :subjects="subjects" :professors="professors" :isUnlocked="isUnlocked" />
-      <ProfessorTab v-if="currentTab === 'professors'" :professors="professors" />
-      <AnnouncementTab v-if="currentTab === 'announcements'" :subjects="subjects" :announcementsData="props.announcementsData" :isUnlocked="isUnlocked" />
-      
-      <Student_Settings v-if="currentTab === 'settings'" />
-      <Student_About v-if="currentTab === 'about'" />
-    </main>
-  </div>
+      <main class="content-area">
+  <RoadmapTab 
+    v-if="currentTab === 'roadmap'" 
+    :subjects="subjects" 
+    :isUnlocked="isUnlocked" 
+  />
+  
+  <SyllabusTab 
+    v-if="currentTab === 'syllabus'" 
+    :subjects="subjects" 
+  />
+  
+  <TutorialTab 
+    v-if="currentTab === 'tutorials'" 
+    :subjects="subjects" 
+  />
+  
+  <EnrolledTab 
+    v-if="currentTab === 'enrolled'" 
+    :subjects="subjects" 
+    :isUnlocked="isUnlocked"
+    :professors="professors"
+  />
+  
+  <ProfessorTab 
+    v-if="currentTab === 'professors'" 
+    :professors="professors" 
+  />
+  
+  <AnnouncementTab 
+    v-if="currentTab === 'announcements'" 
+    :subjects="subjects || []" 
+    :announcementsData="Array.isArray(announcementsData) ? announcementsData : []" 
+  />
+</main>
+
+    </div>  
 </template>
 
 <style scoped>
-  .tree-app { 
-    width: 100%; 
-    height: 100%; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
-  }
+  .tree-app { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .top-nav { background: #800000; color: white; padding: 0 2rem; height: 70px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .logo-section { display: flex; align-items: center; gap: 40px; height: 100%; }
+  .logo { font-weight: 800; color: #ffd700; font-size: 1.2rem; }
+  .tabs { display: flex; height: 100%; align-items: flex-end; gap: 5px; }
+  .tabs button { background: transparent; border: none; color: white; padding: 10px 20px 15px; cursor: pointer; opacity: 0.7; font-weight: 600; border-bottom: 3px solid transparent; transition: 0.2s; }
+  .tabs button.active { opacity: 1; border-bottom: 3px solid #ffd700; color: #ffd700; }
   
-  .top-nav { 
-    background: #800000; 
-    color: white; 
-    padding: 0 2rem; 
-    height: 70px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    z-index: 100; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-  }
+  .prog-box { display: flex; align-items: center; gap: 15px; width: 380px; }
   
-  .logo-section { 
-    display: flex; 
-    align-items: center; 
-    gap: 40px; 
-    height: 100%; 
-  }
-  
-  .logo { 
-    font-weight: 800; 
-    color: #ffd700; 
-    font-size: 1.2rem; 
-  }
-  
-  .tabs { 
-    display: flex; 
-    height: 100%; 
-    align-items: flex-end; 
-    gap: 5px; 
-  }
-  
-  .tabs button { 
-    background: transparent; 
-    border: none; 
-    color: white; 
-    padding: 10px 20px 15px; 
-    cursor: pointer; 
-    opacity: 0.7; 
-    font-weight: 600; 
-    border-bottom: 3px solid transparent; 
-    transition: 0.2s; 
-  }
-  
-  .tabs button.active { 
-    opacity: 1; 
-    border-bottom: 3px solid #ffd700; 
-    color: #ffd700; 
-  }
-  
-  .prog-box { 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    width: 380px; 
-  }
-  
-  .rail { 
-    flex: 1; 
-    height: 10px; 
-    background: rgba(255,255,255,0.2); 
-    border-radius: 5px; 
-    overflow: hidden; 
-  }
-  
-  .fill { 
-    height: 100%; 
-    background: #ffd700; 
-    transition: 0.6s ease; 
-  }
-  
-  .pct { 
-    font-weight: 800; 
-    color: #ffd700; 
-    font-size: 0.9rem; 
-    white-space: nowrap; 
-  }
+  .rail { flex: 1; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden; }
+  .fill { height: 100%; background: #ffd700; transition: 0.6s ease; }
+  .pct { font-weight: 800; color: #ffd700; font-size: 0.9rem; white-space: nowrap; }
 
-  .content-area { 
-    flex: 1; 
-    overflow: auto; 
-    position: relative; 
-    background: #f8fafc; 
-    width: 100%; 
-    display: block; 
-  }
-
-  .dropdown-container { 
-    position: relative; 
-    display: flex; 
-    align-items: center; 
-  }
-  
-  .menu-btn { 
-    background: transparent; 
-    border: none; 
-    color: white; 
-    cursor: pointer; 
-    padding: 5px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    transition: 0.2s; 
-    border-radius: 8px;
-  }
-  
-  .menu-btn:hover { 
+  .logout-btn { 
     background: rgba(255,255,255,0.1); 
-  }
-  
-  .dropdown-menu { 
-    position: absolute; 
-    top: 130%; 
-    left: 0; 
-    background: white; 
-    border-radius: 12px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-    width: 220px; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
-    z-index: 200; 
-    border: 1px solid #e2e8f0;
-  }
-  
-  .dropdown-menu button { 
-    padding: 15px 20px; 
-    background: transparent; 
-    border: none; 
-    text-align: left; 
-    font-size: 0.95rem; 
-    font-weight: 700; 
-    color: #334155; 
+    border: 1px solid rgba(255,255,255,0.2); 
+    color: white; 
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 0.9rem;
     cursor: pointer; 
     transition: 0.2s; 
-    border-bottom: 1px solid #f1f5f9; 
-    opacity: 1; 
   }
-  
-  .dropdown-menu button:last-child { 
-    border-bottom: none; 
+  .logout-btn:hover { 
+    background: #ef4444; 
+    border-color: #ef4444; 
   }
-  
-  .dropdown-menu button:hover { 
-    background: #f8fafc; 
-    color: #800000; 
-    padding-left: 25px; 
-  }
-  
-  .dropdown-menu button.logout-opt { 
-    color: #e11d48; 
-  }
-  
-  .dropdown-menu button.logout-opt:hover { 
-    color: #be123c; 
-    background: #fff1f2; 
-  }
+
+  .content-area { flex: 1; overflow: auto; position: relative; background: #f8fafc; width: 100%; display: block; }
 </style>
