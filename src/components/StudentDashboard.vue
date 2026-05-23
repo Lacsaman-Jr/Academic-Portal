@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, inject, Ref } from 'vue'
   import RoadmapTab from './Student/RoadmapTab.vue'
   import SyllabusTab from './Student/SyllabusTab.vue'
   import TutorialTab from './Student/TutorialTab.vue'
   import EnrolledTab from './Student/EnrolledTab.vue'
   import ProfessorTab from './Student/ProfessorTab.vue'
   import AnnouncementTab from './Student/AnnouncementTab.vue'
+  import MSUCalendarTab from './Student/MSUCalendarTab.vue'
+  
 
   import Student_Settings from '../components/Student/DropDown/Student_Settings.vue'
   import Student_About from '../components/Student/DropDown/Student_About.vue'
@@ -24,6 +26,7 @@
 
   interface Professor {
     name: string;
+    role?: string;
     expertise: string;
     description: string;
   }
@@ -31,18 +34,79 @@
   const props = defineProps(['announcementsData'])
   const emit = defineEmits(['logout'])
 
+  // Inject the global dark mode state
+  const isDarkMode = inject<Ref<boolean>>('isDarkMode', ref(false))
+
   const currentTab = ref('roadmap')
-  const isDropdownOpen = ref(false) // NEW: Dropdown State
+  const isDropdownOpen = ref(false) 
 
   const professors = ref<Professor[]>([
-    { name: 'Professor Isra, Johaira', expertise: 'Database Systems', description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.' },
-    { name: 'Professor Elcana, Llewelyn', expertise: 'Software Engineering', description: 'Prof. Elcana has extensive experience in the software development lifecycle and UI/UX design, emphasizing Agile methodologies.' },
-    { name: 'Professor Asakil, Al-annuar', expertise: 'Theoretical Computer Science', description: 'An expert in mathematical logic and computational complexity. He teaches students the formal foundations of algorithmic thinking.' },
-    { name: 'Professor Asakil, Mudzna', expertise: 'Artificial Intelligence', description: 'Prof. Mudzna leads research in Machine Learning and Intelligent Systems, focusing on neural network implementation and automation.' },
-    { name: 'Professor Lucman, Abdurachman', expertise: 'Network Security', description: 'A specialist in cybersecurity and systems administration. He focuses on network protocols, encryption, and infrastructure defense.' },
-    { name: 'Professor Tarathingan, Bantugon', expertise: 'Computer Architecture', description: 'Expert in high-performance computing and parallel systems. He teaches the intricate relationship between hardware and software.' },
-    { name: 'Professor Mondejar, Jeffrey', expertise: 'Programming Paradigms', description: 'Prof. Mondejar specializes in functional and imperative programming languages, helping students master logic across different coding environments.' },
-    { name: 'Professor Gubat, Sayyedatel Janna', expertise: 'System Engineer', description: 'Prof. Gubat specializes in functional and imperative programming languages, helping students master logic across different coding environments.' }
+    { 
+      name: 'Johaira R. Isra, MSCA', 
+      role: 'Assistant Dean / Faculty',
+      expertise: 'Database Systems', 
+      description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.' 
+    },
+    { 
+      name: 'Janice F. Wade, MSCS', 
+      role: 'DCS Chairperson',
+      expertise: 'Computer Science & Academic Leadership', 
+      description: 'As the Chairperson of the Department of Computing Sciences, she oversees academic programs, faculty development, and departmental operations.' 
+    },
+    { 
+      name: 'Azreen M. Marohomsalic, ECE, MIT', 
+      role: 'Faculty',
+      expertise: 'Information Technology & Electronics', 
+      description: 'Specializes in the intersection of hardware and software, leveraging his ECE and MIT background to teach advanced computing applications.' 
+    },
+    { 
+      name: 'Al Annuar M. Asakil', 
+      role: 'Computer Network Administrator',
+      expertise: 'Network Infrastructure', 
+      description: 'Manages and maintains the department\'s network infrastructure, ensuring secure, efficient, and reliable connectivity for the college.' 
+    },
+    { 
+      name: 'Mudzna M. Asakil, MSCS', 
+      role: 'Faculty',
+      expertise: 'Artificial Intelligence', 
+      description: 'Prof. Mudzna leads research in Machine Learning and Intelligent Systems, focusing on neural network implementation and automation.' 
+    },
+    { 
+      name: 'Sacaria B. Gulam, MGD', 
+      role: 'Special Assistant (OVCAA)',
+      expertise: 'Academic Affairs Administration', 
+      description: 'Serves as the Special Assistant for the Office of the Vice Chancellor for Academic Affairs, assisting with administrative policies and academic coordination.' 
+    },
+    { 
+      name: 'Jeffrey M. Mondejar, MSCS (CAR)', 
+      role: 'Faculty',
+      expertise: 'Programming Paradigms', 
+      description: 'Prof. Mondejar specializes in functional and imperative programming languages, helping students master logic across different coding environments.' 
+    },
+    { 
+      name: 'Llewelyn A. Elcana, MSCS (CAR)', 
+      role: 'Faculty',
+      expertise: 'Software Engineering', 
+      description: 'Prof. Elcana has extensive experience in the software development lifecycle and UI/UX design, emphasizing Agile methodologies.' 
+    },
+    { 
+      name: 'Bantogun S. Tarathingan', 
+      role: 'Faculty',
+      expertise: 'Computer Architecture', 
+      description: 'Expert in high-performance computing and parallel systems. He teaches the intricate relationship between hardware and software.' 
+    },
+    { 
+      name: 'Lucman S. Abdulrachman, MSCS (CAR)', 
+      role: 'Faculty',
+      expertise: 'Network Security', 
+      description: 'A specialist in cybersecurity and systems administration. He focuses on network protocols, encryption, and infrastructure defense.' 
+    },
+    { 
+      name: 'Sayyedatel Janna M. Gubat', 
+      role: 'Special Assistant (OVCRED)',
+      expertise: 'Systems Engineering & Research Coordination', 
+      description: 'Coordinates initiatives as Special Assistant to the OVCRED, while applying her expertise in system engineering to support research and development.' 
+    }
   ])
 
   const subjects = ref<Subject[]>([
@@ -122,7 +186,7 @@
 </script>
 
 <template>
-  <div class="tree-app">
+  <div class="tree-app" :class="{ 'dark-theme': isDarkMode }">
     <header class="top-nav">
       <div class="logo-section">
         
@@ -148,13 +212,14 @@
           <button :class="{ active: currentTab === 'enrolled' }" @click="switchTab('enrolled')">Enrolled</button>
           <button :class="{ active: currentTab === 'professors' }" @click="switchTab('professors')">Professors</button>
           <button :class="{ active: currentTab === 'announcements' }" @click="switchTab('announcements')">Announcements</button>
+          <button :class="{ active: currentTab === 'calendar' }" @click="switchTab('calendar')">MSU Calendar</button> 
         </nav>
       </div>
       
       <div class="prog-box">
         <div class="rail"><div class="fill" :style="{ width: progressPercentage + '%' }"></div></div>
         <span class="pct">{{ finishedUnits.toFixed(2) }} / {{ totalUnits.toFixed(2) }}</span>
-        </div>
+      </div>
     </header>
 
     <main class="content-area">
@@ -164,8 +229,9 @@
       <EnrolledTab v-if="currentTab === 'enrolled'" :subjects="subjects" :professors="professors" :isUnlocked="isUnlocked" />
       <ProfessorTab v-if="currentTab === 'professors'" :professors="professors" />
       <AnnouncementTab v-if="currentTab === 'announcements'" :subjects="subjects" :announcementsData="props.announcementsData" :isUnlocked="isUnlocked" />
-      
+      <MSUCalendarTab v-if="currentTab === 'calendar'" /> 
       <Student_Settings v-if="currentTab === 'settings'" />
+      <Student_AccountSettings v-if="currentTab === 'account-settings'" />
       <Student_About v-if="currentTab === 'about'" />
     </main>
   </div>
@@ -336,5 +402,41 @@
   .dropdown-menu button.logout-opt:hover { 
     color: #be123c; 
     background: #fff1f2; 
+  }
+
+  /* --- DARK MODE OVERRIDES --- */
+  .dark-theme .content-area {
+    background: #0f172a; 
+    color: #e2e8f0;
+  }
+
+  .dark-theme .top-nav {
+    background: #4a0404; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .dark-theme .dropdown-menu {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  .dark-theme .dropdown-menu button {
+    color: #cbd5e1;
+    border-bottom-color: #334155;
+  }
+
+  .dark-theme .dropdown-menu button:hover {
+    background: #334155;
+    color: #ffd700;
+  }
+
+  .dark-theme .dropdown-menu button.logout-opt {
+    color: #fb7185;
+  }
+
+  .dark-theme .dropdown-menu button.logout-opt:hover {
+    background: #4c0519;
+    color: #f43f5e;
   }
 </style>
