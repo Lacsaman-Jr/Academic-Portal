@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ProfManageClassTab from '../components/Professor/ProfAnnouncementTab.vue'
-import ProfAnnouncementTab from '../components/Professor/ProfManageClassTab.vue'
+import ProfAnnouncementTab from '../components/Professor/ProfAnnouncementTab.vue'
+import ProfManageClassTab from '../components/Professor/ProfManageClassTab.vue'
 
-
-// NEW: Settings Imports
-import Prof_Settings from '../components/Professor/DropDown/Prof_About.vue'
-import Prof_AccountSettings from '../components/Professor/DropDown/Prof_AccountSettings.vue'
+import Prof_Settings from '../components/Professor/DropDown/Prof_Settings.vue'
 import Prof_About from '../components/Professor/DropDown/Prof_About.vue'
 
 const props = defineProps(['announcementsData'])
@@ -44,7 +41,6 @@ const handleDropdownClick = (option: string) => {
             
             <div v-if="isDropdownOpen" class="dropdown-menu">
               <button @click="handleDropdownClick('settings')">Settings</button>
-              <button @click="handleDropdownClick('account-settings')">Account Settings</button>
               <button @click="handleDropdownClick('about')">About</button>
               <button class="logout-opt" @click="handleDropdownClick('logout')">Sign Out</button>
             </div>
