@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { sharedAnnouncements } from './utils/sharedAnnouncements';
+import { ref, computed } from 'vue'
 import Login from './components/Login.vue'
 import StudentDashboard from './components/StudentDashboard.vue'
 import ProfessorDashboard from './components/ProfessorDashboard.vue'
@@ -9,7 +10,6 @@ const userRole = ref('')
 
 const handleLogin = (role: string) => {
   userRole.value = role
- 
   isLoggedIn.value = true 
 }
 
@@ -18,14 +18,18 @@ const handleLogout = () => {
   userRole.value = ''
 }
 
-
 const announcementsData = ref<Record<string, any[]>>({
   'CCC101': [
-    { type: 'Announcement', date: new Date().toISOString(), author: 'Professor Elcana', content: 'Welcome to Computer Programming 1! Please review the syllabus.' }
+    { type: 'Announcement', date: 'May 23, 2026', title: 'Welcome!', content: 'Welcome to Programming 1!', author: 'Professor Elcana', scope: 'Professor Announcement' }
   ],
   'CCC102': [
-    { type: 'Requirement', date: new Date().toISOString(), author: 'Professor Isra', content: 'Submit your OOP Project Proposal by Friday.' }
+    { type: 'Requirement', date: 'May 24, 2026', title: 'Project Proposal', content: 'Submit your OOP Proposal by Friday.', author: 'Professor Isra', scope: 'Professor Announcement' }
   ]
+})
+
+const flattenedAnnouncements = computed(() => {
+  const professorPosts = Object.values(announcementsData.value).flat();
+  return [...sharedAnnouncements.value, ...professorPosts];
 })
 
 const addAnnouncement = (subjectId: string, post: any) => {
@@ -43,7 +47,8 @@ const addAnnouncement = (subjectId: string, post: any) => {
   
   <StudentDashboard 
     v-else-if="userRole === 'student'" 
-    :announcementsData="announcementsData"
+    :subjects="[]"
+    :announcementsData="flattenedAnnouncements"
     @logout="handleLogout" 
   />
   
