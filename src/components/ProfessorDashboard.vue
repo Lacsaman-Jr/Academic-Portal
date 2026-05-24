@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ProfManageClassTab from '../components/Professor/ProfAnnouncementTab.vue'
-import ProfAnnouncementTab from '../components/Professor/ProfManageClassTab.vue'
+import ProfAnnouncementTab from '../components/Professor/ProfAnnouncementTab.vue'
+import ProfManageClassTab from '../components/Professor/ProfManageClassTab.vue'
 
-
-// NEW: Settings Imports
-import Prof_Settings from '../components/Professor/DropDown/Prof_About.vue'
-import Prof_AccountSettings from '../components/Professor/DropDown/Prof_AccountSettings.vue'
+import Prof_Settings from '../components/Professor/DropDown/Prof_Settings.vue'
 import Prof_About from '../components/Professor/DropDown/Prof_About.vue'
+import MSUCalendarTab from '../components/Student/MSUCalendarTab.vue'
 
 const props = defineProps(['announcementsData'])
 const emit = defineEmits(['logout', 'add-announcement'])
@@ -44,7 +42,6 @@ const handleDropdownClick = (option: string) => {
             
             <div v-if="isDropdownOpen" class="dropdown-menu">
               <button @click="handleDropdownClick('settings')">Settings</button>
-              <button @click="handleDropdownClick('account-settings')">Account Settings</button>
               <button @click="handleDropdownClick('about')">About</button>
               <button class="logout-opt" @click="handleDropdownClick('logout')">Sign Out</button>
             </div>
@@ -55,6 +52,7 @@ const handleDropdownClick = (option: string) => {
         <nav class="tabs">
           <button :class="{ active: currentTab === 'manage' }" @click="currentTab = 'manage'">Manage Classes</button>
           <button :class="{ active: currentTab === 'announcements' }" @click="currentTab = 'announcements'">Announcements</button>
+          <button :class="{ active: currentTab === 'calendar' }" @click="currentTab = 'calendar'">Calendar</button>
         </nav>
       </div>
       
@@ -77,6 +75,11 @@ const handleDropdownClick = (option: string) => {
         @add-announcement="(subjectId, post) => emit('add-announcement', subjectId, post)"
       />
       
+      <MSUCalendarTab 
+        v-if="currentTab === 'calendar'"
+        :classes="myClasses" 
+       />
+
       <Prof_Settings v-else-if="currentTab === 'settings'" />
       <Prof_AccountSettings v-else-if="currentTab === 'account-settings'" />
       <Prof_About v-else-if="currentTab === 'about'" />
