@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { ref, computed, inject, Ref } from 'vue'
+  import { ref, computed, inject } from 'vue'
+  import type { Ref } from 'vue'
   import RoadmapTab from './Student/RoadmapTab.vue'
   import SyllabusTab from './Student/SyllabusTab.vue'
   import TutorialTab from './Student/TutorialTab.vue'
@@ -22,6 +23,24 @@
     description: string;
     examples: string; 
     units: number;
+    semester?: string;
+    tutorials?: Tutorial[];
+  }
+
+  interface Resource {
+    id: string;
+    title: string;
+    type: 'video' | 'article' | 'link' | 'pdf' | 'code';
+    url: string;
+  }
+
+  interface Tutorial {
+    id: string;
+    name: string;
+    description: string;
+    duration: string;
+    difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+    resources?: Resource[];
   }
 
   interface Professor {
@@ -110,14 +129,308 @@
   ])
 
   const subjects = ref<Subject[]>([
-    { id: 'CCC100', code: 'CCC100', title: 'Fundamentals of Computing', units: 3, completed: false, prerequisites: [], grid: { r: 1, c: 2 }, description: 'Introduction to computer architecture, data representation, and the fundamental operations of a computer system.', examples: 'Binary, Hex, Logic Gates, and CPU Instruction Sets.' },
-    { id: 'CCC101', code: 'CCC101', title: 'Computer Programming 1', units: 3, completed: false, prerequisites: [], grid: { r: 2, c: 2 }, description: 'Basic programming concepts using a high-level language.', examples: 'Variables, Data Types, Control Structures, and Basic Logic.' },
-    { id: 'MAT049', code: 'MAT049', title: 'Pre-Calculus', units: 0, completed: false, prerequisites: [], grid: { r: 3, c: 2 }, description: 'Foundational mathematics for engineering and science.', examples: 'Trigonometry, Analytical Geometry, and Series.' },
-    { id: 'MAT051', code: 'MAT051', title: 'Calculus I', units: 5, completed: false, prerequisites: ['MAT049'], grid: { r: 4, c: 3 }, description: 'Introduction to differential calculus.', examples: 'Limits, Continuity, Derivatives, and Applications.' },
-    { id: 'CCC102', code: 'CCC102', title: 'Computer Programming 2', units: 3, completed: false, prerequisites: ['CCC101'], grid: { r: 1, c: 3 }, description: 'Intermediate programming focusing on Object-Oriented paradigms.', examples: 'Classes, Objects, Inheritance, and Polymorphism.' },
-    { id: 'MAT061', code: 'MAT061', title: 'Calculus II', units: 5, completed: false, prerequisites: ['MAT051'], grid: { r: 4, c: 4 }, description: 'Study of integral calculus and transcendental functions.', examples: 'Integration Techniques and Infinite Series.' },
-    { id: 'MAT101', code: 'MAT101', title: 'Logic and Set Theory', units: 3, completed: false, prerequisites: ['MAT049'], grid: { r: 3, c: 3 }, description: 'Introduction to mathematical logic and the theory of sets.', examples: 'Truth Tables, Set Operations, and Proof Techniques.' },
-    { id: 'CCC121', code: 'CCC121', title: 'Data Structures & Alg', units: 3, completed: false, prerequisites: ['CCC102'], grid: { r: 1, c: 4 }, description: 'Organizing and managing data for efficient access and modification.', examples: 'Linked Lists, Stacks, Queues, and Trees.' },
+    { 
+      id: 'CCC100', 
+      code: 'CCC100', 
+      title: 'Fundamentals of Computing', 
+      units: 3, 
+      completed: false, 
+      prerequisites: [], 
+      grid: { r: 1, c: 2 }, 
+      description: 'Introduction to computer architecture, data representation, and the fundamental operations of a computer system.', 
+      examples: 'Binary, Hex, Logic Gates, and CPU Instruction Sets.',
+      tutorials: [
+        { 
+          id: 'ccc100-1', 
+          name: 'Number Systems', 
+          description: 'Learn binary, hexadecimal, and decimal number systems', 
+          duration: '20 min', 
+          difficulty: 'Beginner',
+          resources: [
+            { id: 'r1', title: 'Binary to Decimal Conversion', type: 'video', url: 'https://example.com/binary' },
+            { id: 'r2', title: 'Number Systems Guide', type: 'pdf', url: 'https://example.com/number-systems.pdf' }
+          ]
+        },
+        { 
+          id: 'ccc100-2', 
+          name: 'Logic Gates and Boolean Algebra', 
+          description: 'Understand AND, OR, NOT gates and logic circuits', 
+          duration: '25 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r3', title: 'Logic Gates Explained', type: 'video', url: 'https://example.com/logic-gates' },
+            { id: 'r4', title: 'Boolean Algebra Reference', type: 'pdf', url: 'https://example.com/boolean.pdf' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'CCC101', 
+      code: 'CCC101', 
+      title: 'Computer Programming 1', 
+      units: 3, 
+      completed: false, 
+      prerequisites: [], 
+      grid: { r: 2, c: 2 }, 
+      description: 'Basic programming concepts using a high-level language.', 
+      examples: 'Variables, Data Types, Control Structures, and Basic Logic.',
+      tutorials: [
+        { 
+          id: 'ccc101-1', 
+          name: 'Getting Started with Programming', 
+          description: 'Learn the basics of programming concepts', 
+          duration: '15 min', 
+          difficulty: 'Beginner',
+          resources: [
+            { id: 'r5', title: 'Programming Basics Tutorial', type: 'video', url: 'https://example.com/prog-basics' },
+            { id: 'r6', title: 'Your First Program', type: 'code', url: 'https://example.com/first-prog' }
+          ]
+        },
+        { 
+          id: 'ccc101-2', 
+          name: 'Variables and Data Types', 
+          description: 'Understand different data types and how to use them', 
+          duration: '20 min', 
+          difficulty: 'Beginner',
+          resources: [
+            { id: 'r7', title: 'Data Types Video', type: 'video', url: 'https://example.com/data-types' },
+            { id: 'r8', title: 'Variables Guide', type: 'pdf', url: 'https://example.com/variables.pdf' }
+          ]
+        },
+        { 
+          id: 'ccc101-3', 
+          name: 'Control Flow and Loops', 
+          description: 'Master conditionals and iteration', 
+          duration: '25 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r9', title: 'Control Flow Tutorial', type: 'video', url: 'https://example.com/control-flow' },
+            { id: 'r10', title: 'Practice Problems', type: 'pdf', url: 'https://example.com/practice.pdf' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'MAT049', 
+      code: 'MAT049', 
+      title: 'Pre-Calculus', 
+      units: 0, 
+      completed: false, 
+      prerequisites: [], 
+      grid: { r: 3, c: 2 }, 
+      description: 'Foundational mathematics for engineering and science.', 
+      examples: 'Trigonometry, Analytical Geometry, and Series.',
+      tutorials: [
+        { 
+          id: 'mat049-1', 
+          name: 'Trigonometry Fundamentals', 
+          description: 'Learn sine, cosine, tangent and trigonometric identities', 
+          duration: '30 min', 
+          difficulty: 'Beginner',
+          resources: [
+            { id: 'r11', title: 'Trig Functions Video', type: 'video', url: 'https://example.com/trig' },
+            { id: 'r12', title: 'Trig Cheat Sheet', type: 'pdf', url: 'https://example.com/trig.pdf' }
+          ]
+        },
+        { 
+          id: 'mat049-2', 
+          name: 'Analytical Geometry', 
+          description: 'Understand lines, circles, and conic sections', 
+          duration: '35 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r13', title: 'Geometry Tutorial', type: 'video', url: 'https://example.com/geometry' },
+            { id: 'r14', title: 'Geometry Guide', type: 'article', url: 'https://example.com/geometry-guide' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'MAT051', 
+      code: 'MAT051', 
+      title: 'Calculus I', 
+      units: 5, 
+      completed: false, 
+      prerequisites: ['MAT049'], 
+      grid: { r: 4, c: 3 }, 
+      description: 'Introduction to differential calculus.', 
+      examples: 'Limits, Continuity, Derivatives, and Applications.',
+      tutorials: [
+        { 
+          id: 'mat051-1', 
+          name: 'Limits and Continuity', 
+          description: 'Understand the foundation of calculus', 
+          duration: '30 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r15', title: 'Limits Explained', type: 'video', url: 'https://example.com/limits' },
+            { id: 'r16', title: 'Limits Formulas', type: 'pdf', url: 'https://example.com/limits.pdf' }
+          ]
+        },
+        { 
+          id: 'mat051-2', 
+          name: 'Derivatives', 
+          description: 'Learn how to calculate and apply derivatives', 
+          duration: '35 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r17', title: 'Derivative Video', type: 'video', url: 'https://example.com/derivatives' },
+            { id: 'r18', title: 'Derivative Rules', type: 'pdf', url: 'https://example.com/derivatives.pdf' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'CCC102', 
+      code: 'CCC102', 
+      title: 'Computer Programming 2', 
+      units: 3, 
+      completed: false, 
+      prerequisites: ['CCC101'], 
+      grid: { r: 1, c: 3 }, 
+      description: 'Intermediate programming focusing on Object-Oriented paradigms.', 
+      examples: 'Classes, Objects, Inheritance, and Polymorphism.',
+      tutorials: [
+        { 
+          id: 'ccc102-1', 
+          name: 'Object-Oriented Basics', 
+          description: 'Learn classes, objects, and OOP principles', 
+          duration: '25 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r19', title: 'OOP Introduction', type: 'video', url: 'https://example.com/oop-intro' },
+            { id: 'r20', title: 'Classes Tutorial', type: 'code', url: 'https://example.com/classes-example' }
+          ]
+        },
+        { 
+          id: 'ccc102-2', 
+          name: 'Inheritance and Polymorphism', 
+          description: 'Master inheritance and polymorphic behavior', 
+          duration: '30 min', 
+          difficulty: 'Advanced',
+          resources: [
+            { id: 'r21', title: 'Inheritance Video', type: 'video', url: 'https://example.com/inheritance' },
+            { id: 'r22', title: 'Polymorphism Guide', type: 'article', url: 'https://example.com/poly' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'MAT061', 
+      code: 'MAT061', 
+      title: 'Calculus II', 
+      units: 5, 
+      completed: false, 
+      prerequisites: ['MAT051'], 
+      grid: { r: 4, c: 4 }, 
+      description: 'Study of integral calculus and transcendental functions.', 
+      examples: 'Integration Techniques and Infinite Series.',
+      tutorials: [
+        { 
+          id: 'mat061-1', 
+          name: 'Integration Basics', 
+          description: 'Learn antiderivatives and indefinite integrals', 
+          duration: '35 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r23', title: 'Integration Video', type: 'video', url: 'https://example.com/integration' },
+            { id: 'r24', title: 'Integration Formulas', type: 'pdf', url: 'https://example.com/integration.pdf' }
+          ]
+        },
+        { 
+          id: 'mat061-2', 
+          name: 'Definite Integrals and Applications', 
+          description: 'Master area calculations and applications', 
+          duration: '40 min', 
+          difficulty: 'Advanced',
+          resources: [
+            { id: 'r25', title: 'Definite Integrals', type: 'video', url: 'https://example.com/definite' },
+            { id: 'r26', title: 'Applications Guide', type: 'article', url: 'https://example.com/int-apps' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'MAT101', 
+      code: 'MAT101', 
+      title: 'Logic and Set Theory', 
+      units: 3, 
+      completed: false, 
+      prerequisites: ['MAT049'], 
+      grid: { r: 3, c: 3 }, 
+      description: 'Introduction to mathematical logic and the theory of sets.', 
+      examples: 'Truth Tables, Set Operations, and Proof Techniques.',
+      tutorials: [
+        { 
+          id: 'mat101-1', 
+          name: 'Propositional Logic', 
+          description: 'Understand truth values, logical operators, and truth tables', 
+          duration: '25 min', 
+          difficulty: 'Beginner',
+          resources: [
+            { id: 'r27', title: 'Logic Video', type: 'video', url: 'https://example.com/logic' },
+            { id: 'r28', title: 'Truth Tables', type: 'pdf', url: 'https://example.com/truth-tables.pdf' }
+          ]
+        },
+        { 
+          id: 'mat101-2', 
+          name: 'Set Theory', 
+          description: 'Learn sets, operations, and relations', 
+          duration: '30 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r29', title: 'Set Theory Video', type: 'video', url: 'https://example.com/sets' },
+            { id: 'r30', title: 'Set Operations Guide', type: 'article', url: 'https://example.com/set-ops' }
+          ]
+        }
+      ]
+    },
+    { 
+      id: 'CCC121', 
+      code: 'CCC121', 
+      title: 'Data Structures & Alg', 
+      units: 3, 
+      completed: false, 
+      prerequisites: ['CCC102'], 
+      grid: { r: 1, c: 4 }, 
+      description: 'Organizing and managing data for efficient access and modification.', 
+      examples: 'Linked Lists, Stacks, Queues, and Trees.',
+      tutorials: [
+        { 
+          id: 'ccc121-1', 
+          name: 'Arrays and Linked Lists', 
+          description: 'Compare and implement linear data structures', 
+          duration: '30 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r31', title: 'Arrays vs Lists', type: 'video', url: 'https://example.com/arrays-lists' },
+            { id: 'r32', title: 'Linked Lists Code', type: 'code', url: 'https://example.com/linked-list' }
+          ]
+        },
+        { 
+          id: 'ccc121-2', 
+          name: 'Stacks and Queues', 
+          description: 'Understand LIFO and FIFO structures', 
+          duration: '25 min', 
+          difficulty: 'Intermediate',
+          resources: [
+            { id: 'r33', title: 'Stacks & Queues', type: 'video', url: 'https://example.com/stacks' },
+            { id: 'r34', title: 'Implementation Guide', type: 'article', url: 'https://example.com/impl' }
+          ]
+        },
+        { 
+          id: 'ccc121-3', 
+          name: 'Trees and Graphs', 
+          description: 'Learn hierarchical and network data structures', 
+          duration: '40 min', 
+          difficulty: 'Advanced',
+          resources: [
+            { id: 'r35', title: 'Trees Tutorial', type: 'video', url: 'https://example.com/trees' },
+            { id: 'r36', title: 'Graph Algorithms', type: 'pdf', url: 'https://example.com/graphs.pdf' }
+          ]
+        }
+      ]
+    },
     { id: 'CSC130', code: 'CSC130', title: 'Discrete Structures', units: 3, completed: false, prerequisites: ['MAT101'], grid: { r: 2, c: 4 }, description: 'Mathematical structures that are fundamentally discrete rather than continuous.', examples: 'Graphs, Trees, and Counting Methods.' },
     { id: 'CSC142', code: 'CSC142', title: 'Automata Theory', units: 3, completed: false, prerequisites: ['MAT101'], grid: { r: 3, c: 4 }, description: 'Abstract models of machines and the problems they can solve.', examples: 'Finite Automata, Context-Free Grammars.' },
     { id: 'STT101', code: 'STT101', title: 'Statistics', units: 4, completed: false, prerequisites: ['MAT049'], grid: { r: 2, c: 3 }, description: 'Methods for collecting, analyzing, and interpreting data.', examples: 'Probability, Distributions, and Inference.' },
