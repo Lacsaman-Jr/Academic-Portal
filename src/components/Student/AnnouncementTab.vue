@@ -24,9 +24,13 @@
         :style="{ borderColor: getScopeColor(announcement.scope) }"
       >
         <div class="card-meta">
-          <span class="date-tag">📅 {{ announcement.date }}</span>
+          <span class="date-tag">📅 {{ formatDate(announcement.date) }}</span>
           <span :class="['scope-badge', announcement.scope.toLowerCase().replace(' ', '-')]">
             {{ announcement.scope }}
+          </span>
+          <!-- Added tag sub-badge for real-time course specific updates -->
+          <span v-if="announcement.category" class="category-tag">
+            {{ announcement.category }}
           </span>
         </div>
         <h3 class="announcement-title">{{ announcement.title }}</h3>
@@ -46,20 +50,28 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
+const props = defineProps({
+  announcementsData: {
+    type: Object,
+    default: () => ({})
+  }
+});
+
 interface Announcement {
   title: string;
   content: string;
   date: string;
   scope: 'Campus-Wide' | 'College-Level' | 'Department-Level';
   author: string;
+  category?: string;
 }
 
 const activeFilter = ref('All');
 const filterTabs = ['All', 'Campus-Wide', 'College-Level', 'Department-Level'];
 
-const announcements = ref<Announcement[]>([
+const defaultAnnouncements: Announcement[] = [
   {
-    title: 'Filing of Candidacy for EleCSyon 2026 ',
+    title: 'Filing of Candidacy for EleCSyon 2026',
     content: 'Are you ready to lead and serve the computing community? The filing of certificates of candidacy for the upcoming POINTERS Computing Society Departmental Elections is now officially open. For the full list of available positions, eligibility requirements, and evaluation descriptions, please check the pinned post on our official POINTERS Facebook Page.',
     date: 'April 20, 2026',
     scope: 'Department-Level',
@@ -79,19 +91,58 @@ const announcements = ref<Announcement[]>([
     scope: 'Campus-Wide',
     author: 'MSU - Main Supreme Student Government'
   }
-]);
+];
+
+const allAnnouncements = computed<Announcement[]>(() => {
+  const liveList: Announcement[] = [];
+
+  if (props.announcementsData) {
+    Object.keys(props.announcementsData).forEach((subjectKey) => {
+      const posts = props.announcementsData[subjectKey];
+      if (Array.isArray(posts)) {
+        posts.forEach((post) => {
+          let standardizedAuthor = post.author || 'Faculty Member';
+          if (standardizedAuthor.startsWith('Prof. ')) {
+            standardizedAuthor = standardizedAuthor.replace('Prof. ', 'Professor ');
+          }
+
+          liveList.push({
+            title: `${subjectKey}: ${post.type}`,
+            content: post.content || '',
+            date: post.date || new Date().toISOString(),
+            scope: 'Department-Level', 
+            author: standardizedAuthor,
+            category: post.type 
+          });
+        });
+      }
+    });
+  }
+
+  return [...liveList, ...defaultAnnouncements];
+});
 
 const filteredAnnouncements = computed(() => {
   if (activeFilter.value === 'All') {
-    return announcements.value;
+    return allAnnouncements.value;
   }
-  return announcements.value.filter(item => item.scope === activeFilter.value);
+  return allAnnouncements.value.filter(item => item.scope === activeFilter.value);
 });
 
 const getScopeColor = (scope: string) => {
   if (scope === 'Campus-Wide') return '#800000';
   if (scope === 'College-Level') return '#4647a1';
   return '#a30053';
+};
+
+const formatDate = (dateString: string) => {
+  try {
+    const parsed = new Date(dateString);
+    if (isNaN(parsed.getTime())) return dateString;
+    return parsed.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateString;
+  }
 };
 </script>
 
@@ -193,6 +244,16 @@ const getScopeColor = (scope: string) => {
 .scope-badge.college-level { background-color: #e3e4f9; color: #393a80; }
 .scope-badge.department-level { background-color: #fce7f1; color: #850043; }
 
+.category-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #f1f5f9;
+  color: #475569;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
 .announcement-title {
   font-size: 1.25rem;
   color: #111827;
@@ -204,6 +265,7 @@ const getScopeColor = (scope: string) => {
   line-height: 1.6;
   font-size: 0.95rem;
   margin-bottom: 16px;
+  white-space: pre-wrap;
 }
 
 .card-footer {
@@ -221,4 +283,15 @@ const getScopeColor = (scope: string) => {
   border-radius: 8px;
   border: 1px dashed #d1d5db;
 }
+
+:deep(.dark-theme) .announcement-container { background-color: #0f172a; }
+:deep(.dark-theme) .announcement-card { background: #1e293b; border-color: #334155; }
+:deep(.dark-theme) .announcement-title { color: #f1f5f9; }
+:deep(.dark-theme) .announcement-content { color: #cbd5e1; }
+:deep(.dark-theme) .filter-btn { background-color: #1e293b; border-color: #475569; color: #94a3b8; }
+:deep(.dark-theme) .filter-btn.active { background-color: #ffd700; color: #0f172a; border-color: #ffd700; }
+:deep(.dark-theme) .header-section h2 { color: #ffd700; }
+:deep(.dark-theme) .header-section p { color: #94a3b8; }
+:deep(.dark-theme) .category-tag { background-color: #334155; color: #e2e8f0; }
+:deep(.dark-theme) .empty-state { background: #1e293b; border-color: #475569; color: #94a3b8; }
 </style>
