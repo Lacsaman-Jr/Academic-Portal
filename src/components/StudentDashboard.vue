@@ -29,6 +29,9 @@
     role?: string;
     expertise: string;
     description: string;
+    "EMAIL ADDRESS"?: string;
+    "CONSULTATION"?: string;
+    "HANDLED COURSES"?: string[];
   }
 
   const props = defineProps(['announcementsData'])
@@ -45,67 +48,100 @@
       name: 'Johaira R. Isra, MSCA', 
       role: 'Assistant Dean / Faculty',
       expertise: 'Database Systems', 
-      description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.' 
+      description: 'Dr. Isra is a specialist in Relational Database Management and Data Mining. She focuses on efficient data architecture and query optimization.',
+      "EMAIL ADDRESS": "johaira.isra@msumain.edu.ph",
+      "CONSULTATION": "Tue/Thu 1:00 PM - 3:00 PM",
+      "HANDLED COURSES": ["CCC121", "CCC151"]
     },
     { 
       name: 'Janice F. Wade, MSCS', 
       role: 'DCS Chairperson',
       expertise: 'Computer Science & Academic Leadership', 
-      description: 'As the Chairperson of the Department of Computing Sciences, she oversees academic programs, faculty development, and departmental operations.' 
+      description: 'As the Chairperson of the Department of Computing Sciences, she oversees academic programs, faculty development, and departmental operations.',
+      "EMAIL ADDRESS": "janice.wade@msumain.edu.ph",
+      "CONSULTATION": "Mon/Wed/Fri 9:00 AM - 11:00 AM",
+      "HANDLED COURSES": ["CCC101", "CCC102"]
     },
     { 
       name: 'Azreen M. Marohomsalic, ECE, MIT', 
       role: 'Faculty',
       expertise: 'Information Technology & Electronics', 
-      description: 'Specializes in the intersection of hardware and software, leveraging his ECE and MIT background to teach advanced computing applications.' 
+      description: 'Specializes in the intersection of hardware and software, leveraging his ECE and MIT background to teach advanced computing applications.',
+      "EMAIL ADDRESS": "azreen.marohomsalic@msumain.edu.ph",
+      "CONSULTATION": "Mon/Wed 2:00 PM - 4:00 PM",
+      "HANDLED COURSES": ["CSC112", "CSC113"]
     },
     { 
       name: 'Al Annuar M. Asakil', 
       role: 'Computer Network Administrator',
       expertise: 'Network Infrastructure', 
-      description: 'Manages and maintains the department\'s network infrastructure, ensuring secure, efficient, and reliable connectivity for the college.' 
+      description: 'Manages and maintains the department\'s network infrastructure, ensuring secure, efficient, and reliable connectivity for the college.',
+      "EMAIL ADDRESS": "alannuar.asakil@msumain.edu.ph",
+      "CONSULTATION": "By Appointment Only",
+      "HANDLED COURSES": ["CSC113", "CSC161"]
     },
     { 
       name: 'Mudzna M. Asakil, MSCS', 
       role: 'Faculty',
       expertise: 'Artificial Intelligence', 
-      description: 'Prof. Mudzna leads research in Machine Learning and Intelligent Systems, focusing on neural network implementation and automation.' 
+      description: 'Prof. Mudzna leads research in Machine Learning and Intelligent Systems, focusing on neural network implementation and automation.',
+      "EMAIL ADDRESS": "mudzna.asakil@msumain.edu.ph",
+      "CONSULTATION": "Tue/Thu 9:00 AM - 12:00 PM",
+      "HANDLED COURSES": ["CSC171", "CSC173"]
     },
     { 
       name: 'Sacaria B. Gulam, MGD', 
       role: 'Special Assistant (OVCAA)',
       expertise: 'Academic Affairs Administration', 
-      description: 'Serves as the Special Assistant for the Office of the Vice Chancellor for Academic Affairs, assisting with administrative policies and academic coordination.' 
+      description: 'Serves as the Special Assistant for the Office of the Vice Chancellor for Academic Affairs, assisting with administrative policies and academic coordination.',
+      "EMAIL ADDRESS": "sacaria.gulam@msumain.edu.ph",
+      "CONSULTATION": "Mon-Fri 8:00 AM - 5:00 PM (OVCAA Office)",
+      "HANDLED COURSES": ["CSC194"]
     },
     { 
       name: 'Jeffrey M. Mondejar, MSCS (CAR)', 
       role: 'Faculty',
       expertise: 'Programming Paradigms', 
-      description: 'Prof. Mondejar specializes in functional and imperative programming languages, helping students master logic across different coding environments.' 
+      description: 'Prof. Mondejar specializes in functional and imperative programming languages, helping students master logic across different coding environments.',
+      "EMAIL ADDRESS": "jeffrey.mondejar@msumain.edu.ph",
+      "CONSULTATION": "Wed/Fri 1:00 PM - 3:00 PM",
+      "HANDLED COURSES": ["CCC101", "CSC145"]
     },
     { 
       name: 'Llewelyn A. Elcana, MSCS (CAR)', 
       role: 'Faculty',
       expertise: 'Software Engineering', 
-      description: 'Prof. Elcana has extensive experience in the software development lifecycle and UI/UX design, emphasizing Agile methodologies.' 
+      description: 'Prof. Elcana has extensive experience in the software development lifecycle and UI/UX design, emphasizing Agile methodologies.',
+      "EMAIL ADDRESS": "llwelyn.elcana@msumain.edu.ph",
+      "CONSULTATION": "Tue/Thu 10:00 AM - 12:00 PM",
+      "HANDLED COURSES": ["CSC181", "CSC185", "CSC186"]
     },
     { 
       name: 'Bantogun S. Tarathingan', 
       role: 'Faculty',
       expertise: 'Computer Architecture', 
-      description: 'Expert in high-performance computing and parallel systems. He teaches the intricate relationship between hardware and software.' 
+      description: 'Expert in high-performance computing and parallel systems. He teaches the intricate relationship between hardware and software.',
+      "EMAIL ADDRESS": "bantogun.tarathingan@msumain.edu.ph",
+      "CONSULTATION": "Mon/Wed 10:00 AM - 12:00 PM",
+      "HANDLED COURSES": ["CSC112", "CSC175"]
     },
     { 
       name: 'Lucman S. Abdulrachman, MSCS (CAR)', 
       role: 'Faculty',
       expertise: 'Network Security', 
-      description: 'A specialist in cybersecurity and systems administration. He focuses on network protocols, encryption, and infrastructure defense.' 
+      description: 'A specialist in cybersecurity and systems administration. He focuses on network protocols, encryption, and infrastructure defense.',
+      "EMAIL ADDRESS": "lucman.abdulrachman@msumain.edu.ph",
+      "CONSULTATION": "Fri 9:00 AM - 12:00 PM",
+      "HANDLED COURSES": ["CSC161", "CSC155"]
     },
     { 
       name: 'Sayyedatel Janna M. Gubat', 
       role: 'Special Assistant (OVCRED)',
       expertise: 'Systems Engineering & Research Coordination', 
-      description: 'Coordinates initiatives as Special Assistant to the OVCRED, while applying her expertise in system engineering to support research and development.' 
+      description: 'Coordinates initiatives as Special Assistant to the OVCRED, while applying her expertise in system engineering to support research and development.',
+      "EMAIL ADDRESS": "sayyedatel.gubat@msumain.edu.ph",
+      "CONSULTATION": "Mon/Wed 2:30 PM - 5:30 PM",
+      "HANDLED COURSES": ["CSC198", "CSC199"]
     }
   ])
 
