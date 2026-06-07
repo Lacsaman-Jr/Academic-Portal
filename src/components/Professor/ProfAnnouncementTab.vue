@@ -14,7 +14,7 @@ const newPostContent = ref('')
 
 const currentAnnouncements = computed(() => {
   if (!activeSubject.value) return []
-  if (!props.announcementsData) return [] // Safe check 1
+  if (!props.announcementsData) return []
   
   return props.announcementsData[activeSubject.value.id] || props.announcementsData[activeSubject.value.code] || []
 })
@@ -31,7 +31,7 @@ const submitPost = () => {
   const post = {
     type: newPostType.value,
     date: new Date().toISOString(),
-    author: 'Prof. Elcana', 
+    author: 'Professor Elcana',
     content: newPostContent.value
   }
 
@@ -185,17 +185,15 @@ const formatDate = (dateStr: string) => {
 .icon-placeholder { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 .select-prompt h2 { margin: 0; color: #1e293b; font-weight: 800; }
 
-/* ITO ANG NAAYOS: Inilipat natin ang scrollability sa buong container */
 .feed-container { 
   display: flex; 
   flex-direction: column; 
   flex: 1;
   gap: 20px; 
-  overflow-y: auto; /* DITO NA MAG-SSCROLL ANG LAHAT */
+  overflow-y: auto;
   padding-right: 15px;
 }
 
-/* Scrollbar Styling for the WHOLE feed */
 .feed-container::-webkit-scrollbar { width: 8px; }
 .feed-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
@@ -228,7 +226,6 @@ textarea:focus { border-color: #800000; }
 .post-btn { background: #800000; color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 .post-btn:hover { background: #600000; transform: translateY(-2px); }
 
-/* Inalis na ang overflow sa post list para sumabay siya sa feed container */
 .post-list { 
   display: flex; 
   flex-direction: column; 
